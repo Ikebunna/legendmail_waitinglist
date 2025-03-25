@@ -16,6 +16,7 @@ const options = ref([
   'I want email and payments in one place',
   'I want to support a Nigerian-made platform',
   'I want a better email alternative',
+  'All of the above',
 ]);
 
 const selectedOption = ref('');
