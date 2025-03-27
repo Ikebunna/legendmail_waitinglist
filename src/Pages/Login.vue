@@ -48,7 +48,7 @@ const submitForm = async () => {
   message.value = '';
   
   try {
-    const response = await axios.post('https://dbwaitlist.legendmail.ng/api/auth//', {
+    const response = await axios.post('https://dbwaitlist.legendmail.ng/api/auth/', {
       full_name: form.fullName,
       email: form.email,
       phone_number: form.phone,
