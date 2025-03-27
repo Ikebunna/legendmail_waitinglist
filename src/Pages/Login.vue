@@ -46,9 +46,9 @@ const submitForm = async () => {
   loading.value = true;
   errorMessage.value = '';
   message.value = '';
-
+  
   try {
-    const response = await axios.post('http://localhost:5000/api/auth//', {
+    const response = await axios.post('https://dbwaitlist.legendmail.ng/api/auth//', {
       full_name: form.fullName,
       email: form.email,
       phone_number: form.phone,
