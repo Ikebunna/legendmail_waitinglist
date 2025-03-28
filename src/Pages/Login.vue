@@ -1,13 +1,17 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import axios from 'axios';
+import { useToast } from "vue-toastification";
+import { axiosClient } from '../../config/axiosClient';
+
+// Properly initialize toast
+const toast = useToast();
 
 // Reactive form state
 const form = reactive({
   fullName: '',
   email: '',
   phone: '',
-  invite: '',
 });
 
 // Dropdown options
@@ -22,8 +26,6 @@ const options = ref([
 const selectedOption = ref('');
 const showDropdown = ref(false);
 const loading = ref(false);
-const message = ref('');
-const errorMessage = ref('');
 
 // Toggle dropdown visibility
 const toggleDropdown = () => {
@@ -38,35 +40,50 @@ const selectOption = (option) => {
 
 // Form submission handler
 const submitForm = async () => {
-  if (!form.fullName || !form.email || !selectedOption.value) {
-    errorMessage.value = 'Full Name, Email, and Interest are required.';
+  const client = axiosClient();
+  
+  // Add validation for required fields
+  if (!form.fullName.trim() || !form.email.trim() || !selectedOption.value) {
+    toast.error('Full Name, Email, and Interest are required.');
+    return;
+  }
+
+  // Simple email validation
+  if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+    toast.error('Please enter a valid email address');
     return;
   }
 
   loading.value = true;
-  errorMessage.value = '';
-  message.value = '';
-  
+
   try {
-    const response = await axios.post('https://dbwaitlist.legendmail.ng/api/auth/', {
+    const response = await client.post('/api/auth/', {
       full_name: form.fullName,
       email: form.email,
       phone_number: form.phone,
       interest: selectedOption.value,
     });
 
-    message.value = response.data.message;
+    toast.success(response.data?.message || "Signup successful!");
+
+    // Reset form
     form.fullName = '';
     form.email = '';
     form.phone = '';
     selectedOption.value = '';
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || 'Something went wrong.';
+    // Handle errors more specifically
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error ||
+                        'Something went wrong. Please try again.';
+    toast.error(errorMessage);
   } finally {
     loading.value = false;
   }
 };
 </script>
+
+
 
 <template>
   <div class="relative flex flex-col md:flex-row p-6 min-h-screen items-center justify-center bg-cover bg-center">

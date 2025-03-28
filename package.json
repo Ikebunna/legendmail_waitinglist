@@ -1,8 +1,9 @@
 {
-  "name": "legendmail_waitinglist",
+  "name": "legendmail_waitlist",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": "Stanley Ikebunna",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
